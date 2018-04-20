@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class loadImages
 {
-    public static int[][][] getImages(String filename) throws IOException {
+    public static char[][][] getImages(String filename) throws IOException {
 
         int width = 28, height = 28, total = 5000;
         if (filename.contains("face"))
@@ -13,13 +13,12 @@ public class loadImages
             height = 60;
             total = 451;
         }
-        int imageArray[][][] = new int[total][height][width];
-        char[] temp;
+        char imageArray[][][] = new char[total][height][width];
         int i = 0, k = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String line;
             while ((line = br.readLine()) != null) {
-                imageArray[i][k] = charToInt(line.toCharArray());
+                imageArray[i][k] = line.toCharArray();
                 if (k == height-1)
                 {
                     k = 0;
@@ -46,16 +45,6 @@ public class loadImages
             System.out.println();
         }
 
-    }
-
-    private static int[] charToInt(char[] arr)
-    {
-        int[] line = new int[arr.length];
-        for(int i = 0; i < arr.length; i++)
-        {
-            line[i] = arr[i] == '#' ? 2 : arr[i] == '+' ? 1: 0;
-        }
-        return line;
     }
 
     public static int[] getAnswers(String filename) throws IOException {
