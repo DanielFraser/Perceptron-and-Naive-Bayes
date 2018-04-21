@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Perceptron {
 
@@ -11,28 +12,36 @@ public class Perceptron {
         Random rand = new Random();
         Map<String, Double> temp = new HashMap<>();
         for (String feat : features)
-            temp.put(feat, rand.nextDouble()); //generate random weights for all features
+            temp.put(feat, ThreadLocalRandom.current().nextDouble(-1, 1)); //generate random weights for all features
 
         for (String s : classes)
             weights.put(s, temp);
     }
 
     public void train(List<Map<String, Integer>> featuresList, int[] answers) {
-        weights.keySet();
         Map<String, Integer> curFeats;
-        int globalError = 0, localError = 0;
+        int error;
         double curVal = 0;
         for (int a = 0; a < 100; a++) {
             for (int i = 0; i < featuresList.size(); i++) {
                 curVal = 0;
                 curFeats = featuresList.get(i);
-                for (int j = 0; j < features.size(); j++) {
-                    curVal += curFeats.get(features.get(j)) * (weights.get(answers[i])).get(features.get(j));
+                for (String feature : features) {
+                    curVal += curFeats.get(feature) * (weights.get(answers[i])).get(feature);
                 }
-                localError += curVal >= 0 ? 0 : 1;
+                error = curVal >= 0 ? 1 : 0;
+
+                updateWeights(error);
             }
-            globalError += localError;
         }
+    }
+
+    public boolean predict(List<Map<String, Integer>> featuresList, int[] answers)
+    {
+        return false;
+    }
+
+    private void updateWeights(int error) {
 
     }
 }
