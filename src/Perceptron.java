@@ -3,7 +3,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Perceptron {
 
-    private Map<String, Map<String, Double>> weights = new HashMap<>();
+    private Map<Integer, Map<String, Double>> weights = new HashMap<>();
     private ArrayList<String> classes, features;
 
     public Perceptron(ArrayList<String> classes, Set<String> features) {
@@ -15,7 +15,7 @@ public class Perceptron {
             temp.put(feat, ThreadLocalRandom.current().nextDouble(-1, 1)); //generate random weights for all features
 
         for (String s : classes)
-            weights.put(s, temp);
+            weights.put(Integer.valueOf(s), temp);
     }
 
     public void train(List<Map<String, Integer>> featuresList, int[] answers) {
@@ -36,9 +36,19 @@ public class Perceptron {
         }
     }
 
-    public boolean predict(List<Map<String, Integer>> featuresList, int[] answers)
-    {
+    public boolean predict(Map<String, Integer> featuresList, int answer) {
+        for (String aClass : classes) {
+            predictClass(aClass, featuresList, answer);
+        }
         return false;
+    }
+
+    private void predictClass(String classStr, Map<String, Integer> featureMap, int answer) {
+        int total = 0;
+        for (String feature : features) {
+            total += featureMap.get(feature) * (weights.get(answer)).get(feature);
+        }
+        //if()
     }
 
     private void updateWeights(int error) {
