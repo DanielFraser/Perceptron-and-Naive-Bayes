@@ -9,11 +9,13 @@ public class Perceptron {
     private ArrayList<String> features;
     private List<Integer> classes;
     private int[] w0;
-    private final double learningRate = 0.2;
+    private int epoch;
 
-    public Perceptron(List<Map<String, Integer>> featuresList, int max) {
-        this.w0 = new int[classes.size()];
-        this.classes = IntStream.rangeClosed(0, max).boxed().collect(Collectors.toList());;
+    public Perceptron(List<Map<String, Integer>> featuresList, int max, int epoch) {
+        this.epoch = epoch;
+        this.w0 = new int[max + 1]; //initial weight
+        this.classes = IntStream.rangeClosed(0, max).boxed().collect(Collectors.toList());
+        this.features = new ArrayList<>();
         this.features.addAll(featuresList.get(0).keySet());
         Random rand = new Random();
         Map<String, Double> temp = new HashMap<>();
@@ -25,24 +27,30 @@ public class Perceptron {
     }
 
     public void train(List<Map<String, Integer>> featuresList, int[] answers) {
-
-        for (int a = 0; a < 100; a++) {
+        boolean noChanges = false;
+        for (int a = 0; a < epoch && !noChanges; a++) {
+            noChanges = false;
             for (int i = 0; i < featuresList.size(); i++) {
-                predictTrain(featuresList.get(i), answers[i]);
+                noChanges = noChanges || predictTrain(featuresList.get(i), answers[i]);
             }
         }
     }
 
-    private void predictTrain(Map<String, Integer> featuresList, int answer) {
+    private boolean predictTrain(Map<String, Integer> featuresList, int answer) {
+        boolean change = false;
         boolean val;
         for (Integer aClass : classes) {
             val = predictClass(aClass, featuresList) >= 0;
             if (aClass == answer)
-                if (!val)
+                if (!val) {
                     updateWeights(aClass, Math.abs(aClass - answer));
-                else if (val)
+                    change = true;
+                } else if (val) {
                     updateWeights(aClass, -Math.abs(aClass - answer));
+                    change = true;
+                }
         }
+        return change;
     }
 
     public int predict(Map<String, Integer> featuresList) {
@@ -64,12 +72,13 @@ public class Perceptron {
         for (String feature : features) {
             total += featureMap.get(feature) * (weights.get(classInt)).get(feature);
         }
-        return total+w0[classInt];
+        return total + w0[classInt];
     }
 
     private void updateWeights(int classA, int error) {
         for (int i = 0; i < features.size(); i++) {
-            weights.get(classA).put(features.get(i), weights.get(classA).get(i) + (learningRate*error));
+            double learningRate = 0.2;
+            weights.get(classA).put(features.get(i), weights.get(classA).get(features.get(i)) + (learningRate * error));
             w0[classA] += error > 0 ? 1 : -1;
         }
     }
