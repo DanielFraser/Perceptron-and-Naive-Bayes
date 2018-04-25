@@ -53,7 +53,7 @@ public class Perceptron {
         return change;
     }
 
-    public int predict(Map<String, Integer> featuresList) {
+    int predict(Map<String, Integer> featuresList) {
         int max[] = {Integer.MIN_VALUE, 0};
         int curTotal;
         for (int i = 0; i < classes.size(); i++) {
@@ -76,9 +76,9 @@ public class Perceptron {
     }
 
     private void updateWeights(int classA, int error) {
-        for (int i = 0; i < features.size(); i++) {
+        for (String feature : features) {
             double learningRate = 0.2;
-            weights.get(classA).put(features.get(i), weights.get(classA).get(features.get(i)) + (learningRate * error));
+            weights.get(classA).put(feature, weights.get(classA).get(feature) + (learningRate * error));
             w0[classA] += error > 0 ? 1 : -1;
         }
     }
