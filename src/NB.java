@@ -4,31 +4,39 @@ public class NB {
     private final ArrayList<String> features;
     private int[] label;
     private int maxClasses;
-    private int[][] possibleVals;
     private double[] initProb;
     private Map<Integer, Map<String, Double>> probabilities = new HashMap<>();
     private Map<String, Set<String>> choices;
 
     public NB(List<Map<String, Integer>> featuresList, int max) {
-        this.maxClasses = max;
-        this.features = new ArrayList<>();
-        this.features.addAll(featuresList.get(0).keySet());
-        this.possibleVals = new int[features.size()][];
-        this.initProb = new double[features.size()];
-        this.choices = new HashMap<>();
+        this.maxClasses = max; //0-max classes
+        this.features = new ArrayList<>(); //contains a list of all features
+        this.features.addAll(featuresList.get(0).keySet()); //updates features from map
+        this.initProb = new double[features.size()]; //initial probability of each class (with no features involved)
+        this.choices = new HashMap<>(); //the choices for every single feature
     }
 
+    /**
+     *
+     * @param answers the array of the training answers
+     */
     private void probability(int[] answers) {
-        for (int i = 0; i < answers.length; i++) {
-            this.initProb[answers[i]]++;
+        for (int answer : answers) { //goes through each answer and adds 1 to corresponding class
+            this.initProb[answer]++;
         }
-        for (int i = 0; i < this.initProb.length; i++) {
+        for (int i = 0; i < this.initProb.length; i++) { //converts the totals to probabilities
             this.initProb[i] = this.initProb[i] / answers.length;
         }
     }
 
-    private void getAllPossiblities(Map<String, Integer> featureMap, int answer) {
+    /**
+     *
+     * @param featureMap a map of features from an image
+     */
+    private void getAllPossiblities(Map<String, Integer> featureMap) {
 
+        //goes through each feature and adds the image's feature value to the set of
+        //the corresponding feature
         for (String feature : features) {
             if (choices.containsKey(feature))
                 choices.get(feature).add(String.valueOf(featureMap.get(feature)));
@@ -43,18 +51,16 @@ public class NB {
     }
 
     public void train(List<Map<String, Integer>> featuresList, int[] answers) {
+        //create initial probabilities
         probability(answers);
-        int count = 0;
-        int max = 0;
 
+        //get all possible choices for every feature
         for (int i = 0; i < featuresList.size(); i++) {
-            getAllPossiblities(featuresList.get(i), answers[i]);
+            getAllPossiblities(featuresList.get(i));
         }
         System.out.println(choices);
 
-        for (int i = 0; i < featuresList.size(); i++) {
-            getAllPossiblities(featuresList.get(i), answers[i]);
-        }
+        //need to create possibilities for each (feature|class) for each features value
 //        /**
 //         * loop to set up the size of possible outcomes (distinguish between digit and face)
 //         */
