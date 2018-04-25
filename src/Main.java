@@ -7,15 +7,20 @@ public class Main {
         char[][][] images = loadImages.getImages("data/digitdata/trainingimages");
         int[] answers = loadImages.getAnswers("data/digitdata/traininglabels");
         List<Map<String, Integer>> featureList = Features.createBasicFeatures(images);
-        Perceptron perc = new Perceptron(featureList, 9, 100);
+        NB nb = new NB(featureList, 9);
+        nb.train(featureList, answers);
         //System.out.println(featureList.get(0));
-        perc.train(featureList, answers);
+        //perc.train(featureList, answers);
 
-        images = loadImages.getImages("data/digitdata/validationimages");
-        answers = loadImages.getAnswers("data/digitdata/validationlabels");
-        featureList = Features.createBasicFeatures(images);
-        System.out.println(perc.predict(featureList.get(0)));
-        System.out.println(answers[0]);
-        System.out.println("Done!");
+//        images = loadImages.getImages("data/digitdata/validationimages");
+//        answers = loadImages.getAnswers("data/digitdata/validationlabels");
+//        featureList = Features.createBasicFeatures(images);
+//        int total = 0;
+//        for(int i = 0; i < featureList.size(); i++)
+//        {
+//            total += perc.predict(featureList.get(i)) == answers[i] ? 1:0;
+//        }
+//        System.out.println(total);
+//        System.out.println("Done!");
     }
 }
