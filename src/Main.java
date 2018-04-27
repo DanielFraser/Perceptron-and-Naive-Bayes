@@ -5,7 +5,6 @@ import java.util.Map;
 public class Main {
     public static void main(String[] args) throws IOException {
         PerceptronEval();
-        //System.out.printf("%d", (int) (.1*100));
     }
 
     /**
@@ -18,19 +17,20 @@ public class Main {
     private static Perceptron perceptronTrain(boolean face, double percent) throws IOException {
         char[][][] images;
         int[] answers;
+        int max = 9;
+        String imageTrain = "data/digitdata/trainingimages", imageAnswers = "data/digitdata/traininglabels";
         Perceptron perc;
         List<Map<String, Integer>> featureList;
-        if (face) {
-            images = loadImages.getImages("data/facedata/facedatatrain", percent); //load face training
-            answers = loadImages.getAnswers("data/facedata/facedatatrainlabels", percent);
-            featureList = Features.createBasicFeatures(images);
-            perc = new Perceptron(featureList, 1, 100);
-        } else {
-            images = loadImages.getImages("data/digitdata/trainingimages", percent); //load digit training
-            answers = loadImages.getAnswers("data/digitdata/traininglabels", percent);
-            featureList = Features.createBasicFeatures(images);
-            perc = new Perceptron(featureList, 9, 100);
+        if(face)
+        {
+            imageTrain = "data/facedata/facedatatrain";
+            imageAnswers = "data/facedata/facedatatrainlabels";
+            max = 1;
         }
+        images = loadImages.getImages(imageTrain, percent); //load digit training
+        answers = loadImages.getAnswers(imageAnswers, percent);
+        featureList = Features.createBasicFeatures(images);
+        perc = new Perceptron(featureList, max, 5);
         perc.train(featureList, answers); //train the perceptron
         return perc; //return the perceptron
     }
@@ -79,7 +79,7 @@ public class Main {
      * @throws IOException
      */
     private static void PerceptronEval() throws IOException {
-        String[] formats = {"dt", "ft"};
+        String[] formats = {"dv"}; //, "fv"
         for (String format : formats) {
             System.out.printf("%s\n", format.equals("dt") ? "Digit Test" : "Face Test");
             System.out.println("--------------------------------------------------");

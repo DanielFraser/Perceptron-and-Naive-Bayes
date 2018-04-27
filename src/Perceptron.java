@@ -28,7 +28,7 @@ public class Perceptron {
 
     public void train(List<Map<String, Integer>> featuresList, int[] answers) {
         boolean noChanges = false;
-        for (int a = 0; a < epoch && !noChanges; a++) {
+        for (int a = 0; a < this.epoch && !noChanges; a++) {
             noChanges = false;
             for (int i = 0; i < featuresList.size(); i++) {
                 noChanges = noChanges || predictTrain(featuresList.get(i), answers[i]);
@@ -37,20 +37,12 @@ public class Perceptron {
     }
 
     private boolean predictTrain(Map<String, Integer> featuresList, int answer) {
-        boolean change = false;
-        boolean val;
-        for (Integer aClass : classes) {
-            val = predictClass(aClass, featuresList) >= 0;
-            if (aClass == answer)
-                if (!val) {
-                    updateWeights(aClass, Math.abs(aClass - answer));
-                    change = true;
-                } else if (val) {
-                    updateWeights(aClass, -Math.abs(aClass - answer));
-                    change = true;
-                }
+        int predictedVal = predict(featuresList);
+        if (predictedVal != answer) {
+            updateWeights(predictedVal, featuresList, answer);
+            return false;
         }
-        return change;
+        return true;
     }
 
     int predict(Map<String, Integer> featuresList) {
@@ -75,11 +67,13 @@ public class Perceptron {
         return total + w0[classInt];
     }
 
-    private void updateWeights(int classA, int error) {
+    private void updateWeights(int classA, Map<String, Integer> correct, int answer) {
         for (String feature : features) {
-            double learningRate = 0.2;
-            weights.get(classA).put(feature, weights.get(classA).get(feature) + (learningRate * error));
-            w0[classA] += error > 0 ? 1 : -1;
+            weights.get(classA).put(feature, weights.get(classA).get(feature) + correct.get(feature));
+            w0[classA] -= 1;
+
+            weights.get(answer).put(feature, weights.get(answer).get(feature) + correct.get(feature));
+            w0[answer] += 1;
         }
     }
 }
