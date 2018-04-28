@@ -11,6 +11,9 @@ public class Main {
         List<Map<String, Integer>> featureList = Features.createBasicFeatures(images);
         NB nb = new NB(featureList,9);
         nb.train(featureList, answers);
+        featureList = Features.createBasicFeatures(loadImages.getImages("data/digitdata/testimages", 1));
+        answers = loadImages.getAnswers("data/digitdata/testlabels", 1);
+        nb.predictALL(featureList, answers);
     }
 
     /**

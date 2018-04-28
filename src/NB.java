@@ -51,13 +51,12 @@ public class NB {
         }
     }
 
-    private void finishProb()
-    {
+    private void finishProb() {
         for (int i = 0; i <= this.maxClasses; i++) {
             for (String feature : this.features) {
                 for (Integer s : this.probabilities.get(i).get(feature).keySet()) {
-                        this.probabilities.get(i).get(feature).put(s, this.probabilities.get(i).get(feature).get(s)/ this.total[i]);
-                        System.out.println(this.probabilities.get(i).get(feature).get(s));
+                    this.probabilities.get(i).get(feature).put(s, this.probabilities.get(i).get(feature).get(s) / this.total[i]);
+                    //System.out.println(this.probabilities.get(i).get(feature).get(s));
                 }
             }
         }
@@ -73,7 +72,31 @@ public class NB {
         }
         finishProb();
         System.out.println("Done training");
+    }
 
-        //need to create possibilities for each (feature|class) for each features value
+    public void predictALL(List<Map<String, Integer>> featuresList, int[] answers) {
+        int totalCorrect = 0;
+        for (int i = 0; i < featuresList.size(); i++) {
+            totalCorrect += predictClass(featuresList.get(i)) == answers[i] ? 1 : 0;
+        }
+        System.out.println((double) totalCorrect/featuresList.size());
+    }
+
+    private int predictClass(Map<String, Integer> features) {
+        double total = 0, curTotal = 0;
+        int Aclass = 0;
+        for (int i = 0; i <= this.maxClasses; i++) {
+            curTotal = 0;
+            for (String s : this.features) {
+                if (this.probabilities.get(i).get(s).containsKey(features.get(s)))
+                    curTotal *= this.probabilities.get(i).get(s).get(features.get(s));
+            }
+            curTotal *= initProb[i];
+            if (curTotal > total) {
+                total = curTotal;
+                Aclass = i;
+            }
+        }
+        return Aclass;
     }
 }
