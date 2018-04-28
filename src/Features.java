@@ -4,6 +4,15 @@
  *
  * make sure result is returned as List<Map<String, Integer>> since Maps allow us to
  * add and remove features with minimal code modification
+ *
+ * IDEAS:
+ *
+ * digits:
+ *  circles
+ *  lines
+ *  
+ * face:
+ *  any ideas?
  */
 
 import java.util.ArrayList;
@@ -13,7 +22,7 @@ import java.util.Map;
 
 public class Features {
 
-    public static List<Map<String, Integer>> createBasicFeatures(char[][][] images) {
+    static List<Map<String, Integer>> createBasicFeatures(char[][][] images) {
         List<Map<String, Integer>> featureList = new ArrayList<>();
         Map<String, Integer> temp;
         for (int i = 0; i < images.length; i++) {
@@ -27,4 +36,6 @@ public class Features {
         }
         return featureList;
     }
+
+
 }
