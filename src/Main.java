@@ -4,7 +4,13 @@ import java.util.Map;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        PerceptronEval();
+        //PerceptronEval();
+        String imageTrain = "data/digitdata/trainingimages", imageAnswers = "data/digitdata/traininglabels";
+        char[][][] images = loadImages.getImages(imageTrain, 1); //load digit training
+        int[] answers = loadImages.getAnswers(imageAnswers, 1);
+        List<Map<String, Integer>> featureList = Features.createBasicFeatures(images);
+        NB nb = new NB(featureList,9);
+        nb.train(featureList, answers);
     }
 
     /**
