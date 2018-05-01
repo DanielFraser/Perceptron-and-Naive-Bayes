@@ -4,22 +4,33 @@ import java.util.Map;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-//        PerceptronEval();
+        PerceptronEval();
+    }
+
+    private static NB naiveTrain(boolean face, double percent) throws IOException {
+        char[][][] images;
+        int[] answers;
+        int max = 9;
         String imageTrain = "data/digitdata/trainingimages", imageAnswers = "data/digitdata/traininglabels";
-        char[][][] images = loadImages.getImages(imageTrain, 1); //load digit training
-        int[] answers = loadImages.getAnswers(imageAnswers, 1);
-        List<Map<String, Integer>> featureList = Features.createBasicFeatures(images);
-        NB nb = new NB(featureList,9);
-        nb.train(featureList, answers);
-        featureList = Features.createBasicFeatures(loadImages.getImages("data/digitdata/validationimages", 1));
-        answers = loadImages.getAnswers("data/digitdata/validationlabels", 1);
-        nb.predictALL(featureList, answers);
-        //nb.printProbs();
+        NB nb;
+        List<Map<String, Integer>> featureList;
+        if (face) {
+            imageTrain = "data/facedata/facedatatrain";
+            imageAnswers = "data/facedata/facedatatrainlabels";
+            max = 1;
+        }
+        images = loadImages.getImages(imageTrain, percent); //load digit training
+        answers = loadImages.getAnswers(imageAnswers, percent);
+        featureList = Features.allFeatures(images);
+        nb = new NB(featureList, max);
+        nb.train(featureList, answers); //train the perceptron
+        return nb; //return the perceptron
     }
 
     /**
      * Loads images and trains the perceptron depending if they're doing face or not
-     * @param face are we using face data or not?
+     *
+     * @param face    are we using face data or not?
      * @param percent how much data do we want
      * @return a trained perceptron
      * @throws IOException
@@ -31,23 +42,56 @@ public class Main {
         String imageTrain = "data/digitdata/trainingimages", imageAnswers = "data/digitdata/traininglabels";
         Perceptron perc;
         List<Map<String, Integer>> featureList;
-        if(face)
-        {
+        if (face) {
             imageTrain = "data/facedata/facedatatrain";
             imageAnswers = "data/facedata/facedatatrainlabels";
             max = 1;
         }
         images = loadImages.getImages(imageTrain, percent); //load digit training
         answers = loadImages.getAnswers(imageAnswers, percent);
-        featureList = Features.allFeatures(images);
+        featureList = Features.createBasicFeatures(images);
         perc = new Perceptron(featureList, max, 20);
         perc.train(featureList, answers); //train the perceptron
         return perc; //return the perceptron
     }
 
     /**
-     *
-     * @param file do we want face validation/test or digit validation/test
+     * @param file    do we want face validation/test or digit validation/test
+     * @param percent percentage of data we want
+     * @throws IOException
+     */
+    private static void NaiveTest(String file, double percent) throws IOException {
+
+        String filename = "", answerFile = null;
+        boolean face = false;
+        if (file.equalsIgnoreCase("dv")) { //digit validation
+            filename = "data/digitdata/validationimages";
+            answerFile = "data/digitdata/validationlabels";
+        } else if (file.equalsIgnoreCase("dt")) { //digit test
+            filename = "data/digitdata/testimages";
+            answerFile = "data/digitdata/testlabels";
+        } else if (file.equalsIgnoreCase("fv")) { //face validation
+            filename = "data/facedata/facedatavalidation";
+            answerFile = "data/facedata/facedatavalidationlabels";
+            face = true;
+        } else if (file.equalsIgnoreCase("ft")) { //face test
+            filename = "data/facedata/facedatatest";
+            answerFile = "data/facedata/facedatatestlabels";
+            face = true;
+        }
+
+        NB nb = naiveTrain(face, percent);
+        char[][][] images = loadImages.getImages(filename, 1);
+        int[] answers = loadImages.getAnswers(answerFile, 1);
+        List<Map<String, Integer>> featureList = Features.allFeatures(images); //Features.quadrants() createBasicFeatures allFeatures
+        int total = nb.predictALL(featureList, answers);
+        String inner = String.format("%d%%", (int) Math.round(percent * 100)); // creates "42%"
+        System.out.printf("|%-4s%18d|%13d|%10d%%|\n", inner, featureList.size(), total, (int) (100 * ((double) total / featureList.size())));
+        System.out.println("--------------------------------------------------");
+    }
+
+    /**
+     * @param file    do we want face validation/test or digit validation/test
      * @param percent percentage of data we want
      * @throws IOException
      */
@@ -74,31 +118,43 @@ public class Main {
         Perceptron perc = perceptronTrain(face, percent);
         char[][][] images = loadImages.getImages(filename, 1);
         int[] answers = loadImages.getAnswers(answerFile, 1);
-        List<Map<String, Integer>> featureList = Features.allFeatures(images); //Features.quadrants() createBasicFeatures allFeatures
+        List<Map<String, Integer>> featureList = Features.createBasicFeatures(images); //Features.quadrants() createBasicFeatures allFeatures
         int total = 0;
-        //perc.printWeights();
         for (int i = 0; i < featureList.size(); i++) {
             total += perc.predict(featureList.get(i)) == answers[i] ? 1 : 0;
-            //System.out.println(perc.predict(featureList.get(i)));
         }
-        String inner = String.format("%d%%", (int) Math.round(percent*100)); // creates "42%"
-        System.out.printf("|%-4s%18d|%13d|%10d%%|\n", inner, featureList.size(), total, (int) (100*((double) total / featureList.size())));
+        String inner = String.format("%d%%", (int) Math.round(percent * 100)); // creates "42%"
+        System.out.printf("|%-4s%18d|%13d|%10d%%|\n", inner, featureList.size(), total, (int) (100 * ((double) total / featureList.size())));
         System.out.println("--------------------------------------------------");
     }
 
     /**
      * Used to test perceptron
+     *
      * @throws IOException
      */
     private static void PerceptronEval() throws IOException {
-        String[] formats = {"dv"}; //, "fv"
-        for (String format : formats) {
-            System.out.printf("%s\n", format.equals("dt") || format.equals("dv") ? "Digit Test" : "Face Test");
-            System.out.println("--------------------------------------------------");
-            System.out.printf("|%22s|%13s|%10s |\n", "Total images trained on", "Total correct", "% correct");
-            System.out.println("--------------------------------------------------");
-            for (double i = 1; i <= 1; i += .1) { //go through all percentages
-                PerceptronTest(format, i);
+        String[] formats = {"dt", "ft"};
+        String[] ml = {"perc", "nb"};
+        for (String m : ml) {
+            for (String format : formats) {
+                if (m.equals("perc")) {
+                    System.out.printf("%s\n", format.equals("dt") || format.equals("dv") ? "Digit Test" : "Face Test");
+                    System.out.println("--------------------------------------------------");
+                    System.out.printf("|%22s|%13s|%10s |\n", "Total images tested", "Total correct", "% correct");
+                    System.out.println("--------------------------------------------------");
+                    for (double i = 1; i <= 1; i += .1) { //go through all percentages
+                        PerceptronTest(format, i);
+                    }
+                } else {
+                    System.out.printf("%s\n", format.equals("dt") || format.equals("dv") ? "Digit Test" : "Face Test");
+                    System.out.println("--------------------------------------------------");
+                    System.out.printf("|%22s|%13s|%10s |\n", "Total images tested", "Total correct", "% correct");
+                    System.out.println("--------------------------------------------------");
+                    for (double i = 1; i <= 1; i += .1) { //go through all percentages
+                        NaiveTest(format, i);
+                    }
+                }
             }
         }
     }

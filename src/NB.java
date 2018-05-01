@@ -31,7 +31,6 @@ class NB {
         }
         for (int i = 0; i < this.initProb.length; i++) { //converts the totals to probabilities
             this.initProb[i] =  this.initProb[i] / answers.length;
-            //System.out.println(this.initProb[i]);
         }
     }
 
@@ -68,24 +67,20 @@ class NB {
             fillInProbs(answers[i], featuresList.get(i));
         }
         finishProb();
-        System.out.println("Done training");
     }
 
     /**
      * Predicts every item in the list
-     *
-     * @param featuresList
+     *  @param featuresList
      * @param answers
      */
-    void predictALL(List<Map<String, Integer>> featuresList, int[] answers) {
+    int predictALL(List<Map<String, Integer>> featuresList, int[] answers) {
         int totalCorrect = 0;
         for (int i = 0; i < featuresList.size(); i++) {
             totalCorrect += predictClass(featuresList.get(i)) == answers[i] ? 1 : 0;
             //System.out.printf("class: %d, actual: %d\n", predictClass(featuresList.get(i)), answers[i]);
         }
-        System.out.println((double) totalCorrect / featuresList.size());
-        System.out.println(totalCorrect);
-        System.out.println(featuresList.size());
+        return totalCorrect;
     }
 
     /**
