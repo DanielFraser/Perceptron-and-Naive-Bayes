@@ -22,6 +22,15 @@ import java.util.Map;
 
 class Features {
 
+    static List<Map<String, Integer>> allFeatures(char[][][] images) {
+        List<Map<String, Integer>> pixels = createBasicFeatures(images);
+        List<Map<String, Integer>> quadrants = quadrants(images);
+        for (int i = 0; i < images.length; i++) {
+            pixels.get(i).putAll(quadrants.get(i));
+        }
+        return pixels;
+    }
+
     static List<Map<String, Integer>> createBasicFeatures(char[][][] images) {
         List<Map<String, Integer>> featureList = new ArrayList<>();
         Map<String, Integer> temp;
@@ -41,7 +50,7 @@ class Features {
         List<Map<String, Integer>> featureList = new ArrayList<>();
         Map<String, Integer> temp;
         int width = images[0].length, height = images[0][0].length;
-        int widthHalf = width/4, heightHath = height/4;
+        int widthHalf = width / 4, heightHath = height / 4;
         int[][][] nums = charToInt(images);
         int curTotal;
         for (int[][] num : nums) {
@@ -49,13 +58,12 @@ class Features {
             for (int i = 0; i < width; i += widthHalf) {
                 for (int j = 0; j < height; j += heightHath) {
                     curTotal = 0;
-                    for (int k = i; k <  i + (widthHalf); k++) {
+                    for (int k = i; k < i + (widthHalf); k++) {
                         for (int l = j; l < j + (heightHath); l++) {
                             curTotal += num[k][l];
                         }
                     }
-                    temp.put("quadrant " + (((i / (width / 2))*2) + (j/(height / 2))), curTotal);
-                    //System.out.println(curTotal);
+                    temp.put("quadrant " + (((i / (width / 2)) * 2) + (j / (height / 2))), curTotal);
                 }
             }
             featureList.add(temp);

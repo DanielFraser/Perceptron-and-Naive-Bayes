@@ -12,7 +12,7 @@ public class Perceptron implements Serializable {
     private int epoch, max;
 
     public Perceptron(List<Map<String, Integer>> featuresList, int max, int epoch) {
-        this.epoch = epoch;
+        this.epoch = epoch; //how many times should we train it
         this.w0 = new int[max + 1]; //initial weight
         this.max = max;
         this.features = new ArrayList<>();
@@ -27,8 +27,8 @@ public class Perceptron implements Serializable {
     }
 
     void train(List<Map<String, Integer>> featuresList, int[] answers) {
-        //System.out.println(featuresList.size());
         boolean noChanges = false;
+        //stop when we hit epoch or we didn't have any changes ro weights
         for (int a = 0; a < this.epoch && !noChanges; a++) {
             for (int i = 0; i < featuresList.size(); i++) {
                 noChanges = predictTrain(featuresList.get(i), answers[i]) || noChanges;
@@ -50,8 +50,8 @@ public class Perceptron implements Serializable {
         int curTotal;
         for (int i = 0; i <= this.max; i++) {
             curTotal = predictClass(i, featuresList);
+            //System.out.printf("curtotal %d, i: %d \n", curTotal, i);
             if (curTotal > max[0]) {
-
                 max[0] = curTotal;
                 max[1] = i;
             }
@@ -69,7 +69,7 @@ public class Perceptron implements Serializable {
 
     private void updateWeights(int classA, Map<String, Integer> correct, int answer) {
         for (String feature : features) {
-            weights.get(classA).put(feature, weights.get(classA).get(feature) + correct.get(feature));
+            weights.get(classA).put(feature, weights.get(classA).get(feature) - correct.get(feature));
             w0[classA] -= 1;
 
             weights.get(answer).put(feature, weights.get(answer).get(feature) + correct.get(feature));
