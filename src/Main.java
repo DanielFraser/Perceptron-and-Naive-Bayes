@@ -38,8 +38,8 @@ public class Main {
         }
         images = loadImages.getImages(imageTrain, percent); //load digit training
         answers = loadImages.getAnswers(imageAnswers, percent);
-        featureList = Features.quadrants(images);
-        perc = new Perceptron(featureList, max, 5);
+        featureList = Features.createBasicFeatures(images);
+        perc = new Perceptron(featureList, max, 200);
         perc.train(featureList, answers); //train the perceptron
         return perc; //return the perceptron
     }
@@ -71,10 +71,11 @@ public class Main {
         }
 
         Perceptron perc = perceptronTrain(face, percent);
-        char[][][] images = loadImages.getImages(filename, percent);
-        int[] answers = loadImages.getAnswers(answerFile, percent);
-        List<Map<String, Integer>> featureList = Features.quadrants(images);
+        char[][][] images = loadImages.getImages(filename, 1);
+        int[] answers = loadImages.getAnswers(answerFile, 1);
+        List<Map<String, Integer>> featureList = Features.createBasicFeatures(images); //Features.quadrants() createBasicFeatures
         int total = 0;
+        //perc.printWeights();
         for (int i = 0; i < featureList.size(); i++) {
             total += perc.predict(featureList.get(i)) == answers[i] ? 1 : 0;
         }
@@ -88,13 +89,13 @@ public class Main {
      * @throws IOException
      */
     private static void PerceptronEval() throws IOException {
-        String[] formats = {"dv"};
+        String[] formats = {"dv"}; //, "fv"
         for (String format : formats) {
-            System.out.printf("%s\n", format.equals("dt") ? "Digit Test" : "Face Test");
+            System.out.printf("%s\n", format.equals("dt") || format.equals("dv") ? "Digit Test" : "Face Test");
             System.out.println("--------------------------------------------------");
-            System.out.printf("|%22s|%13s|%10s |\n", "Total images evaluated", "Total correct", "% correct");
+            System.out.printf("|%22s|%13s|%10s |\n", "Total images trained on", "Total correct", "% correct");
             System.out.println("--------------------------------------------------");
-            for (double i = 0.1; i <= 1; i += .1) { //go through all percentages
+            for (double i = .1; i <= 1; i += .1) { //go through all percentages
                 PerceptronTest(format, i);
             }
         }
