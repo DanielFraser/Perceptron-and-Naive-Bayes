@@ -4,16 +4,16 @@ import java.util.Map;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        //PerceptronEval();
-        String imageTrain = "data/digitdata/trainingimages", imageAnswers = "data/digitdata/traininglabels";
-        char[][][] images = loadImages.getImages(imageTrain, 1); //load digit training
-        int[] answers = loadImages.getAnswers(imageAnswers, 1);
-        List<Map<String, Integer>> featureList = Features.createBasicFeatures(images);
-        NB nb = new NB(featureList,9);
-        nb.train(featureList, answers);
-        featureList = Features.createBasicFeatures(loadImages.getImages("data/digitdata/testimages", 1));
-        answers = loadImages.getAnswers("data/digitdata/testlabels", 1);
-        nb.predictALL(featureList, answers);
+        PerceptronEval();
+//        String imageTrain = "data/digitdata/trainingimages", imageAnswers = "data/digitdata/traininglabels";
+//        char[][][] images = loadImages.getImages(imageTrain, 1); //load digit training
+//        int[] answers = loadImages.getAnswers(imageAnswers, 1);
+//        List<Map<String, Integer>> featureList = Features.quadrants(images);
+//        NB nb = new NB(featureList,9);
+//        nb.train(featureList, answers);
+//        featureList = Features.quadrants(loadImages.getImages("data/digitdata/testimages", 1));
+//        answers = loadImages.getAnswers("data/digitdata/testlabels", 1);
+//        nb.predictALL(featureList, answers);
     }
 
     /**
@@ -38,7 +38,7 @@ public class Main {
         }
         images = loadImages.getImages(imageTrain, percent); //load digit training
         answers = loadImages.getAnswers(imageAnswers, percent);
-        featureList = Features.createBasicFeatures(images);
+        featureList = Features.quadrants(images);
         perc = new Perceptron(featureList, max, 5);
         perc.train(featureList, answers); //train the perceptron
         return perc; //return the perceptron
@@ -73,7 +73,7 @@ public class Main {
         Perceptron perc = perceptronTrain(face, percent);
         char[][][] images = loadImages.getImages(filename, percent);
         int[] answers = loadImages.getAnswers(answerFile, percent);
-        List<Map<String, Integer>> featureList = Features.createBasicFeatures(images);
+        List<Map<String, Integer>> featureList = Features.quadrants(images);
         int total = 0;
         for (int i = 0; i < featureList.size(); i++) {
             total += perc.predict(featureList.get(i)) == answers[i] ? 1 : 0;
@@ -88,7 +88,7 @@ public class Main {
      * @throws IOException
      */
     private static void PerceptronEval() throws IOException {
-        String[] formats = {"dv"}; //, "fv"
+        String[] formats = {"dv"};
         for (String format : formats) {
             System.out.printf("%s\n", format.equals("dt") ? "Digit Test" : "Face Test");
             System.out.println("--------------------------------------------------");

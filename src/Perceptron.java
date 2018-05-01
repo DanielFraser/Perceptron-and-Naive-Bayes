@@ -1,9 +1,10 @@
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class Perceptron {
+public class Perceptron implements Serializable {
 
     private Map<Integer, Map<String, Double>> weights = new HashMap<>();
     private ArrayList<String> features;
@@ -17,7 +18,6 @@ public class Perceptron {
         this.classes = IntStream.rangeClosed(0, max).boxed().collect(Collectors.toList());
         this.features = new ArrayList<>();
         this.features.addAll(featuresList.get(0).keySet());
-        Random rand = new Random();
         Map<String, Double> temp = new HashMap<>();
         for (String feat : features)
             temp.put(feat, ThreadLocalRandom.current().nextDouble(-1, 1)); //generate random weights for all features

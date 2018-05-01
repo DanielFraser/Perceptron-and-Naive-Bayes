@@ -1,21 +1,19 @@
 import java.util.*;
 
-public class NB {
+class NB {
     private final ArrayList<String> features;
     private int[] label;
     private int maxClasses;
     private double[] initProb;
     private int[] total;
     private Map<Integer, Map<String, Map<Integer, Double>>> probabilities = new HashMap<>();
-    private Map<String, Set<String>> choices;
 
-    public NB(List<Map<String, Integer>> featuresList, int max) {
+    NB(List<Map<String, Integer>> featuresList, int max) {
         this.maxClasses = max; //0-max classes
         this.features = new ArrayList<>(); //contains a list of all features
         this.features.addAll(featuresList.get(0).keySet()); //updates features from map
-        this.initProb = new double[features.size()]; //initial probability of each class (with no features involved)
-        this.total = new int[features.size()]; //initial probability of each class (with no features involved)
-        this.choices = new HashMap<>(); //the choices for every single feature
+        this.initProb = new double[max + 1]; //initial probability of each class (with no features involved)
+        this.total = new int[max + 1]; //total of each class
         for (int i = 0; i <= max; i++) {
             this.probabilities.put(i, new HashMap<>()); //add in new class
             for (String feature : this.features) {
@@ -62,7 +60,7 @@ public class NB {
         }
     }
 
-    public void train(List<Map<String, Integer>> featuresList, int[] answers) {
+    void train(List<Map<String, Integer>> featuresList, int[] answers) {
         //create initial probabilities
         probability(answers);
 
@@ -74,12 +72,14 @@ public class NB {
         System.out.println("Done training");
     }
 
-    public void predictALL(List<Map<String, Integer>> featuresList, int[] answers) {
+    void predictALL(List<Map<String, Integer>> featuresList, int[] answers) {
         int totalCorrect = 0;
         for (int i = 0; i < featuresList.size(); i++) {
             totalCorrect += predictClass(featuresList.get(i)) == answers[i] ? 1 : 0;
         }
-        System.out.println((double) totalCorrect/featuresList.size());
+        System.out.println((double) totalCorrect / featuresList.size());
+        System.out.println(totalCorrect);
+        System.out.println(featuresList.size());
     }
 
     private int predictClass(Map<String, Integer> features) {
