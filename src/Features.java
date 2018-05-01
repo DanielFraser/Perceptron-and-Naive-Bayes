@@ -50,7 +50,7 @@ class Features {
         List<Map<String, Integer>> featureList = new ArrayList<>();
         Map<String, Integer> temp;
         int width = images[0].length, height = images[0][0].length;
-        int widthHalf = width/2, heightHath = height / 2;
+        int widthHalf = width%4==0 ? width/4 : width/2, heightHath = height / 4;
         int[][][] nums = charToInt(images);
         int curTotal;
         for (int[][] num : nums) {
@@ -60,7 +60,6 @@ class Features {
                     curTotal = 0;
                     for (int k = i; k < i + widthHalf; k++) {
                         for (int l = j; l < j + heightHath; l++) {
-                            //System.out.printf("l: %d, k: %d\n", l, k);
                             curTotal += num[k][l];
                         }
                     }
