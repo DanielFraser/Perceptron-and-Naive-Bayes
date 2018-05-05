@@ -155,7 +155,7 @@ public class StartController {
         int[] answers = loadImages.getAnswers(imageAnswers, 1);
         if (index == -2)
             index = new Random().nextInt(answers.length);
-        System.out.println(index);
+        //System.out.println(index);
         List<Map<String, Integer>> featureList;
         if (algo == 'p')
             featureList = Features.createBasicFeatures(images);
