@@ -13,6 +13,8 @@ import utility.loadImages;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 
 public class StartController {
@@ -112,8 +114,17 @@ public class StartController {
         else
             featureList = Features.allFeatures(images);
         if (percent < 1) {
-            Collections.shuffle(featureList);
-            featureList = featureList.subList(0, (int) (percent * featureList.size()));
+            int size = (int) (featureList.size()*percent);
+            List<Integer> indexArray = IntStream.range(0, size).boxed().collect( Collectors.toList() );
+            Collections.shuffle(indexArray);
+            List<Map<String, Integer>> tempFeatureList = new ArrayList<>();
+            List<Integer> tempAnswers = new ArrayList<>();
+            for (Integer index : indexArray) {
+                tempFeatureList.add(featureList.get(index));
+                tempAnswers.add(answers[index]);
+            }
+            featureList = tempFeatureList.subList(0, size);
+            answers = tempAnswers.stream().mapToInt(i->i).toArray();
         }
         if (algo == 'p') {
             perc = new Perceptron(featureList, max, 20);

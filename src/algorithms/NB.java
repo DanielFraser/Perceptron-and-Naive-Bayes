@@ -1,6 +1,9 @@
 package algorithms;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class NB {
     private final ArrayList<String> features;
@@ -73,10 +76,8 @@ public class NB {
 
     /**
      * Predicts every item in the list
-     *
-     * @param featuresList
-     * @param answers
-     */
+     *  @param featuresList
+     * @param answers*/
     public int predictALL(List<Map<String, Integer>> featuresList, int[] answers) {
         int totalCorrect = 0;
         for (int i = 0; i < featuresList.size(); i++) {
