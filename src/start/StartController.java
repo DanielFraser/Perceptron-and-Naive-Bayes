@@ -149,9 +149,11 @@ public class StartController {
             imageTrain = "data/digitdata/validationimages";
             imageAnswers = "data/digitdata/validationlabels";
         }
-        int len = loadImages.countTotal(imageTrain);
+
         char[][][] images = loadImages.getImages(imageTrain, 1); //load digit training
         int[] answers = loadImages.getAnswers(imageAnswers, 1);
+        if (index == -2)
+            index = new Random().nextInt(answers.length);
         List<Map<String, Integer>> featureList;
         if (algo == 'p')
             featureList = Features.createBasicFeatures(images);
