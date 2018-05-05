@@ -6,6 +6,7 @@ import utility.Features;
 import utility.loadImages;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -57,9 +58,13 @@ public class Main {
             imageAnswers = "data/facedata/facedatatrainlabels";
             max = 1;
         }
-        images = loadImages.getImages(imageTrain, percent); //load digit training
-        answers = loadImages.getAnswers(imageAnswers, percent);
+        images = loadImages.getImages(imageTrain, 1); //load digit training
+        answers = loadImages.getAnswers(imageAnswers, 1);
         featureList = Features.createBasicFeatures(images);
+        if(percent < 1){
+            Collections.shuffle(featureList);
+            featureList = featureList.subList(0, (int) (percent*featureList.size()));
+        }
         perc = new Perceptron(featureList, max, 200);
         perc.train(featureList, answers); //train the perceptron
         return perc; //return the perceptron
@@ -100,7 +105,6 @@ public class Main {
         String inner = String.format("%d%%", (int) Math.round(percent * 100)); // creates "42%"
         System.out.printf("|%-4s%18d|%13d|%10d%%|\n", inner, featureList.size(), total, (int) (100 * ((double) total / featureList.size())));
         System.out.println("--------------------------------------------------");
-        //nb.printProbs();
     }
 
     /**

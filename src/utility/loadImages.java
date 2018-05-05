@@ -1,7 +1,6 @@
 package utility;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -13,7 +12,7 @@ public class loadImages {
             width = 60;
             height = 70;
         }
-        int total = (int) Math.round((countTotal(filename)/height) * percent);
+        int total = Math.round(countTotal(filename)/height);
         char imageArray[][][] = new char[total][height][width];
         int i = 0, k = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
@@ -32,7 +31,7 @@ public class loadImages {
         return imageArray;
     }
 
-    public static int countTotal(String filename) throws IOException {
+    private static int countTotal(String filename) throws IOException {
         int total = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String line;

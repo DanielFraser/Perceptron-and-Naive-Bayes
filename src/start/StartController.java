@@ -7,7 +7,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import utility.Features;
 import utility.loadImages;
@@ -100,8 +99,8 @@ public class StartController {
             imageTrain = "data/digitdata/trainingimages";
             imageAnswers = "data/digitdata/traininglabels";
         }
-        images = loadImages.getImages(imageTrain, percent); //load digit training
-        answers = loadImages.getAnswers(imageAnswers, percent);
+        images = loadImages.getImages(imageTrain, 1); //load digit training
+        answers = loadImages.getAnswers(imageAnswers, 1);
         List<Map<String, Integer>> featureList;
         if (algo == 'p')
             featureList = Features.createBasicFeatures(images);
@@ -109,6 +108,10 @@ public class StartController {
             featureList = Features.addCols(images);
         else
             featureList = Features.allFeatures(images);
+        if(percent < 1){
+            Collections.shuffle(featureList);
+            featureList = featureList.subList(0, (int) (percent*featureList.size()));
+        }
         if (algo == 'p') {
             perc = new Perceptron(featureList, max, 20);
             perc.train(featureList, answers);
@@ -206,7 +209,7 @@ public class StartController {
         } else {
             total = nb.predictALL(featureList, answers);
         }
-        report.setText(String.format("%s reports an accuracy of %.1f%%", algo == 'p' ? "Perceptron" : "Naive Bayes", ((double) total / featureList.size()) * 100));
+        report.setText(String.format("%s reports an accuracy\nof %.1f%%", algo == 'p' ? "Perceptron" : "Naive Bayes", ((double) total / featureList.size()) * 100));
     }
 
     private void print(char[][] image) {
