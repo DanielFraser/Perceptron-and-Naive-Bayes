@@ -7,15 +7,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import utility.Features;
 import utility.loadImages;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 
 public class StartController {
@@ -47,11 +45,12 @@ public class StartController {
     @FXML
     private TextField images;
 
+    @FXML
+    private Label pic;
+
     private Perceptron perc;
 
     private NB nb;
-
-    List<Map<String, Integer>> featureList;
 
     /**
      * Start.
@@ -70,6 +69,7 @@ public class StartController {
         model.getSelectionModel().selectFirst();
         data.getItems().addAll("Digits Validation", "Digits Test", "Face Validation", "Face Test");
         data.getSelectionModel().selectFirst();
+        //pic.setFont(new Font(9));
     }
 
     private ArrayList<String> percentages() {
@@ -102,6 +102,7 @@ public class StartController {
         }
         images = loadImages.getImages(imageTrain, percent); //load digit training
         answers = loadImages.getAnswers(imageAnswers, percent);
+        List<Map<String, Integer>> featureList;
         if (algo == 'p')
             featureList = Features.createBasicFeatures(images);
         else if (face)
@@ -154,6 +155,7 @@ public class StartController {
         int[] answers = loadImages.getAnswers(imageAnswers, 1);
         if (index == -2)
             index = new Random().nextInt(answers.length);
+        System.out.println(index);
         List<Map<String, Integer>> featureList;
         if (algo == 'p')
             featureList = Features.createBasicFeatures(images);
@@ -168,6 +170,7 @@ public class StartController {
             total = nb.predictClass(featureList.get(index));
         }
         report.setText(String.format("%s reports the image as %d\nand the actual answer is %d", algo == 'p' ? "Perceptron" : "Naive Bayes", total, answers[index]));
+        print(images[index]);
     }
 
     private void testAllAlgorithm(String dataStr, char algo) throws IOException {
@@ -204,5 +207,23 @@ public class StartController {
             total = nb.predictALL(featureList, answers);
         }
         report.setText(String.format("%s reports an accuracy of %.1f%%", algo == 'p' ? "Perceptron" : "Naive Bayes", ((double) total / featureList.size()) * 100));
+    }
+
+    private void print(char[][] image) {
+        StringBuilder s = new StringBuilder();
+        for (char[] anImage : image) {
+            s.append(array(anImage)).append("\n");
+        }
+        pic.setText(s.toString());
+    }
+
+    private String array(char[] image) {
+        StringBuilder s = new StringBuilder();
+        for (char c : image) {
+//            if (c == ' ')
+//                s.append(c);
+            s.append(c);
+        }
+        return s.toString();
     }
 }
