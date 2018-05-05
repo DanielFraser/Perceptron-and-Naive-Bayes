@@ -25,7 +25,7 @@
       <Label layoutX="315.0" layoutY="84.0" text="Data" />
       <ComboBox fx:id="data" layoutX="374.0" layoutY="79.0" prefWidth="150.0" />
       <Label fx:id="pic" layoutX="301.0" layoutY="217.0" text="Label" />
-      <TextField layoutX="374.0" layoutY="120.0" text="-1" />
+      <TextField fx:id="images" layoutX="374.0" layoutY="120.0" text="-1" />
       <Label layoutX="289.0" layoutY="128.0" text="Certain picture" />
       <Label layoutX="301.0" layoutY="369.0" text="Accuracy" />
       <Label fx:id="report" layoutX="360.0" layoutY="369.0" text="NaN" />

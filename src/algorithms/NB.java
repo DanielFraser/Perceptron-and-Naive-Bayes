@@ -91,7 +91,7 @@ public class NB {
      * @param features
      * @return
      */
-    private int predictClass(Map<String, Integer> features) {
+    public int predictClass(Map<String, Integer> features) {
         double total = 0, curTotal;
         int Aclass = 0;
         for (int i = 0; i <= this.maxClasses; i++) {

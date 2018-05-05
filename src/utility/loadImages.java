@@ -32,7 +32,7 @@ public class loadImages {
         return imageArray;
     }
 
-    private static int countTotal(String filename) throws IOException {
+    public static int countTotal(String filename) throws IOException {
         int total = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String line;
