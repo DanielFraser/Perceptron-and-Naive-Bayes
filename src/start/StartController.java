@@ -151,7 +151,6 @@ public class StartController {
         int len = loadImages.countTotal(imageTrain);
         char[][][] images = loadImages.getImages(imageTrain, 1); //load digit training
         int[] answers = loadImages.getAnswers(imageAnswers, 1);
-        images = new char[][][]{images[index]};
         List<Map<String, Integer>> featureList;
         if (algo == 'p')
             featureList = Features.createBasicFeatures(images);
@@ -165,7 +164,7 @@ public class StartController {
         } else {
             total = nb.predictClass(featureList.get(index));
         }
-        report.setText(String.format("%s reports the image as %d and the actual answer is %d", algo == 'p' ? "Perceptron" : "Naive Bayes", total, answers[index];
+        report.setText(String.format("%s reports the image as %d\nand the actual answer is %d", algo == 'p' ? "Perceptron" : "Naive Bayes", total, answers[index]));
     }
 
     private void testAllAlgorithm(String dataStr, char algo) throws IOException {
