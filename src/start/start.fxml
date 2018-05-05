@@ -24,10 +24,11 @@
       <Label layoutX="279.0" layoutY="30.0" text="Model to test" />
       <Label layoutX="315.0" layoutY="84.0" text="Data" />
       <ComboBox fx:id="data" layoutX="374.0" layoutY="79.0" prefWidth="150.0" />
-      <Label fx:id="pic" layoutX="301.0" layoutY="217.0" text="Label" />
+      <Label fx:id="pic" layoutX="301.0" layoutY="217.0" text="To be worked on later" />
       <TextField fx:id="images" layoutX="374.0" layoutY="120.0" text="-1" />
-      <Label layoutX="289.0" layoutY="128.0" text="Certain picture" />
+      <Label layoutX="289.0" layoutY="128.0" text="Index of image" />
       <Label layoutX="301.0" layoutY="369.0" text="Accuracy" />
       <Label fx:id="report" layoutX="360.0" layoutY="369.0" text="NaN" />
+      <Label layoutX="287.0" layoutY="166.0" text="-1 for all, -2 for random" />
    </children>
 </AnchorPane>
