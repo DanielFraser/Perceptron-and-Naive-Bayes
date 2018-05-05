@@ -25,7 +25,7 @@
       <Label layoutX="22.0" layoutY="455.0" text="Accuracy" />
       <Label fx:id="report" layoutX="81.0" layoutY="455.0" text="NaN" />
       <Label layoutX="287.0" layoutY="166.0" text="-1 for all, -2 for random" />
-      <ScrollPane layoutX="262.0" layoutY="278.0" prefHeight="438.0" prefWidth="485.0">
+      <ScrollPane layoutX="289.0" layoutY="278.0" prefHeight="438.0" prefWidth="458.0">
          <AnchorPane prefHeight="494.0" prefWidth="456.0">
             <Label fx:id="pic" text="To be worked on later" />
          </AnchorPane>
