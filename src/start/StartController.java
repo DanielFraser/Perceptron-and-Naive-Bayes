@@ -51,6 +51,9 @@ public class StartController {
 
     private NB nb;
 
+    private ArrayList<Double> accuracies;
+    private ArrayList<Double> vals;
+
     /**
      * Start.
      *
@@ -108,9 +111,9 @@ public class StartController {
             featureList = Features.addCols(images);
         else
             featureList = Features.allFeatures(images);
-        if(percent < 1){
+        if (percent < 1) {
             Collections.shuffle(featureList);
-            featureList = featureList.subList(0, (int) (percent*featureList.size()));
+            featureList = featureList.subList(0, (int) (percent * featureList.size()));
         }
         if (algo == 'p') {
             perc = new Perceptron(featureList, max, 20);
@@ -121,6 +124,40 @@ public class StartController {
             nb.train(featureList, answers); //train the perceptron
             nbStatus.setText(String.format("trained on %s at %d%%", (face ? "face" : "digits"), Math.round(percent * 100)));
         }
+    }
+
+    public void trainAndTest(ActionEvent E) throws IOException {
+        double[] accuracies = new double[5];
+        double mean, percents, std;
+        boolean face;
+        char algo;
+        for(int i = 0; i < accuracies.length; i++){
+            face = item.getSelectionModel().getSelectedItem().equals("Face");
+            algo = ml.getSelectionModel().getSelectedItem().equals("Perceptron") ? 'p' : 'n';
+            String per = String.valueOf(percent.getSelectionModel().getSelectedItem());
+            percents = Double.valueOf(per.substring(0, per.indexOf('%'))) / 100;
+            trainAlgorithms(face, algo, percents);
+
+            String dataStr = (String) data.getSelectionModel().getSelectedItem();
+            algo = model.getSelectionModel().getSelectedItem().equals("Perceptron") ? 'p' : 'n';
+            accuracies[i] = testAllAlgorithm(dataStr, algo);
+        }
+        mean = avg(accuracies);
+        std = stdDev(accuracies, mean);
+        report.setText(String.format("Accuracy: %.1f%%\nStandard deviation: %.1f", mean, std));
+    }
+
+    private double stdDev(double[] acc, double avg){
+        double std = 0;
+        for (double anAcc : acc) std += Math.pow(anAcc - avg, 2);
+        std = std/acc.length;
+        return Math.sqrt(std);
+    }
+
+    private double avg(double[] acc){
+        double avg = 0;
+        for (double anAcc : acc) avg += anAcc;
+        return avg/acc.length;
     }
 
     public void test(ActionEvent E) throws IOException {
@@ -176,7 +213,7 @@ public class StartController {
         print(images[index]);
     }
 
-    private void testAllAlgorithm(String dataStr, char algo) throws IOException {
+    private double testAllAlgorithm(String dataStr, char algo) throws IOException {
         String imageTrain, imageAnswers;
         if (dataStr.startsWith("Face") && dataStr.endsWith("Test")) {
             imageTrain = "data/facedata/facedatatest";
@@ -210,6 +247,7 @@ public class StartController {
             total = nb.predictALL(featureList, answers);
         }
         report.setText(String.format("%s reports an accuracy\nof %.1f%%", algo == 'p' ? "Perceptron" : "Naive Bayes", ((double) total / featureList.size()) * 100));
+        return ((double) total / featureList.size()) * 100;
     }
 
     private void print(char[][] image) {
@@ -222,11 +260,9 @@ public class StartController {
 
     private String array(char[] image) {
         StringBuilder s = new StringBuilder();
-        for (char c : image) {
-//            if (c == ' ')
-//                s.append(c);
+        for (char c : image)
             s.append(c);
-        }
+
         return s.toString();
     }
 }

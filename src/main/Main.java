@@ -5,10 +5,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import start.StartController;
 
 import java.io.IOException;
-
-import start.StartController;
 
 public class Main extends Application {
 
@@ -27,8 +26,8 @@ public class Main extends Application {
 
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Photos");
-        primaryStage.setResizable(false);
+        primaryStage.setTitle("Machine Learning");
+        primaryStage.setResizable(true);
         primaryStage.show();
     }
 }
