@@ -83,7 +83,8 @@ public class StartController {
     public void train(ActionEvent E) throws IOException {
         boolean face = item.getSelectionModel().getSelectedItem().equals("Face");
         char algo = ml.getSelectionModel().getSelectedItem().equals("Perceptron") ? 'p' : 'n';
-        double percents = Double.valueOf(String.valueOf(percent.getSelectionModel().getSelectedItem()).substring(0, 2)) / 100;
+        String per = String.valueOf(percent.getSelectionModel().getSelectedItem());
+        double percents = Double.valueOf(per.substring(0, per.indexOf('%'))) / 100;
         trainAlgorithms(face, algo, percents);
     }
 
