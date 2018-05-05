@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +22,10 @@ public class Main {
         }
         images = loadImages.getImages(imageTrain, percent); //load digit training
         answers = loadImages.getAnswers(imageAnswers, percent);
-        featureList = Features.allFeatures(images);
+        if (face)
+            featureList = Features.addCols(images);
+        else
+            featureList = Features.allFeatures(images);
         nb = new NB(featureList, max);
         nb.train(featureList, answers); //train the perceptron
         return nb; //return the perceptron
@@ -50,7 +54,7 @@ public class Main {
         images = loadImages.getImages(imageTrain, percent); //load digit training
         answers = loadImages.getAnswers(imageAnswers, percent);
         featureList = Features.createBasicFeatures(images);
-        perc = new Perceptron(featureList, max, 20);
+        perc = new Perceptron(featureList, max, 200);
         perc.train(featureList, answers); //train the perceptron
         return perc; //return the perceptron
     }
@@ -84,10 +88,13 @@ public class Main {
         char[][][] images = loadImages.getImages(filename, 1);
         int[] answers = loadImages.getAnswers(answerFile, 1);
         List<Map<String, Integer>> featureList = Features.allFeatures(images); //Features.quadrants() createBasicFeatures allFeatures
+        if (face)
+            featureList = Features.addCols(images); //Features.quadrants() createBasicFeatures allFeatures
         int total = nb.predictALL(featureList, answers);
         String inner = String.format("%d%%", (int) Math.round(percent * 100)); // creates "42%"
         System.out.printf("|%-4s%18d|%13d|%10d%%|\n", inner, featureList.size(), total, (int) (100 * ((double) total / featureList.size())));
         System.out.println("--------------------------------------------------");
+        //nb.printProbs();
     }
 
     /**
@@ -138,22 +145,20 @@ public class Main {
         String[] ml = {"perc", "nb"};
         for (String m : ml) {
             for (String format : formats) {
-                if (m.equals("perc")) {
-                    System.out.printf("%s\n", format.equals("dt") || format.equals("dv") ? "Digit Test" : "Face Test");
-                    System.out.println("--------------------------------------------------");
-                    System.out.printf("|%22s|%13s|%10s |\n", "Total images tested", "Total correct", "% correct");
-                    System.out.println("--------------------------------------------------");
-                    for (double i = 1; i <= 1; i += .1) { //go through all percentages
+                if (m.equals("perc"))
+                    System.out.println("Perceptron:");
+                else
+                    System.out.println("Naive Bayes:");
+                System.out.println("--------------------------------------------------");
+                System.out.printf("%s\n", format.equals("dt") || format.equals("dv") ? "Digit Test" : "Face Test");
+                System.out.println("--------------------------------------------------");
+                System.out.printf("|%22s|%13s|%10s |\n", "Total images tested", "Total correct", "% correct");
+                System.out.println("--------------------------------------------------");
+                for (double i = 1; i <= 1; i += .1) { //go through all percentages
+                    if (m.equals("perc"))
                         PerceptronTest(format, i);
-                    }
-                } else {
-                    System.out.printf("%s\n", format.equals("dt") || format.equals("dv") ? "Digit Test" : "Face Test");
-                    System.out.println("--------------------------------------------------");
-                    System.out.printf("|%22s|%13s|%10s |\n", "Total images tested", "Total correct", "% correct");
-                    System.out.println("--------------------------------------------------");
-                    for (double i = 1; i <= 1; i += .1) { //go through all percentages
+                    else
                         NaiveTest(format, i);
-                    }
                 }
             }
         }

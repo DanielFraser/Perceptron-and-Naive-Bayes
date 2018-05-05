@@ -30,7 +30,7 @@ class NB {
             this.total[answer]++;
         }
         for (int i = 0; i < this.initProb.length; i++) { //converts the totals to probabilities
-            this.initProb[i] =  this.initProb[i] / answers.length;
+            this.initProb[i] = this.initProb[i] / answers.length;
         }
     }
 
@@ -71,14 +71,14 @@ class NB {
 
     /**
      * Predicts every item in the list
-     *  @param featuresList
+     *
+     * @param featuresList
      * @param answers
      */
     int predictALL(List<Map<String, Integer>> featuresList, int[] answers) {
         int totalCorrect = 0;
         for (int i = 0; i < featuresList.size(); i++) {
             totalCorrect += predictClass(featuresList.get(i)) == answers[i] ? 1 : 0;
-            //System.out.printf("class: %d, actual: %d\n", predictClass(featuresList.get(i)), answers[i]);
         }
         return totalCorrect;
     }
@@ -97,6 +97,8 @@ class NB {
             for (String s : this.features) {
                 if (this.probabilities.get(i).get(s).containsKey(features.get(s))) {
                     curTotal *= this.probabilities.get(i).get(s).get(features.get(s));
+                } else {
+                    curTotal = 0;
                 }
             }
             curTotal *= initProb[i];

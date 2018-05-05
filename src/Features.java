@@ -25,8 +25,12 @@ class Features {
     static List<Map<String, Integer>> allFeatures(char[][][] images) {
         List<Map<String, Integer>> pixels = createBasicFeatures(images);
         List<Map<String, Integer>> quadrants = quadrants(images);
+        List<Map<String, Integer>> cols = addCols(images);
+        List<Map<String, Integer>> rows = addRows(images);
         for (int i = 0; i < images.length; i++) {
             pixels.get(i).putAll(quadrants.get(i));
+            pixels.get(i).putAll(cols.get(i));
+           pixels.get(i).putAll(rows.get(i));
         }
         return pixels;
     }
@@ -50,7 +54,7 @@ class Features {
         List<Map<String, Integer>> featureList = new ArrayList<>();
         Map<String, Integer> temp;
         int width = images[0].length, height = images[0][0].length;
-        int widthHalf = width%4==0 ? width/4 : width/2, heightHath = height / 4;
+        int widthHalf = width % 4 == 0 ? width / 4 : width / 2, heightHath = height / 4;
         int[][][] nums = charToInt(images);
         int curTotal;
         for (int[][] num : nums) {
@@ -71,6 +75,73 @@ class Features {
         return featureList;
     }
 
+    static List<Map<String, Integer>> rowsAndCols(char[][][] images) {
+        List<Map<String, Integer>> rows = addRows(images);
+        List<Map<String, Integer>> cols = addCols(images);
+        for (int i = 0; i < images.length; i++) {
+            rows.get(i).putAll(cols.get(i));
+        }
+        return rows;
+    }
+
+    static int[] maxAndMin(char[][][] images){
+        int[] nums = {100, 0};
+        int colTotal;
+        for (char[][] image : images) {
+            for (int i = 0; i < image[0].length; i++) {
+                colTotal = 0;
+                for (int j = 0; j < image.length; j++) {
+                    colTotal += image[j][i] == '#' ? 1 : 0;
+                }
+                nums[0] = Math.min(colTotal, nums[0]);
+                nums[1] = Math.max(colTotal, nums[1]);
+            }
+        }
+        return nums;
+    }
+
+    static List<Map<String, Integer>> addCols(char[][][] images) {
+        int colTotal;
+        List<Map<String, Integer>> featureList = new ArrayList<>();
+        Map<String, Integer> temp;
+        for (char[][] image : images) {
+            temp = new HashMap<>();
+            for (int i = 0; i < image[0].length; i++) {
+                colTotal = 0;
+                for (int j = 0; j < image.length; j++) {
+                    colTotal += image[j][i] == '#' ? 1 : 0;
+                }
+                temp.put("col " + i, colTotal);
+            }
+            featureList.add(temp);
+        }
+        return featureList;
+    }
+
+    static List<Map<String, Integer>> addRows(char[][][] images) {
+        int colTotal;
+        List<Map<String, Integer>> featureList = new ArrayList<>();
+        Map<String, Integer> temp;
+        for (char[][] image : images) {
+            temp = new HashMap<>();
+            for (int i = 0; i < image.length; i++) {
+                colTotal = 0;
+                for (int j = 0; j < image[0].length; j++) {
+                    colTotal += image[i][j] == '#' ? 1 : 0;
+                }
+                temp.put("col " + i, colTotal);
+            }
+            featureList.add(temp);
+        }
+        return featureList;
+    }
+
+    /**
+     * converts symbols to numbers
+     *
+     * @param images
+     * @return
+     */
     private static int[][][] charToInt(char[][][] images) {
         int depth = images.length, rows = images[0].length, cols = images[0][0].length;
         int[][][] nums = new int[depth][rows][cols];
