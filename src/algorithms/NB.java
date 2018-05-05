@@ -1,13 +1,15 @@
+package algorithms;
+
 import java.util.*;
 
-class NB {
+public class NB {
     private final ArrayList<String> features;
     private int maxClasses;
     private double[] initProb;
     private int[] total;
     private List<Map<String, Map<Integer, Double>>> probabilities = new ArrayList<>();
 
-    NB(List<Map<String, Integer>> featuresList, int max) {
+    public NB(List<Map<String, Integer>> featuresList, int max) {
         this.maxClasses = max; //0-max classes
         this.features = new ArrayList<>(); //contains a list of all features
         this.features.addAll(featuresList.get(0).keySet()); //updates features from map
@@ -58,7 +60,7 @@ class NB {
         }
     }
 
-    void train(List<Map<String, Integer>> featuresList, int[] answers) {
+    public void train(List<Map<String, Integer>> featuresList, int[] answers) {
         //create initial probabilities
         probability(answers);
 
@@ -75,7 +77,7 @@ class NB {
      * @param featuresList
      * @param answers
      */
-    int predictALL(List<Map<String, Integer>> featuresList, int[] answers) {
+    public int predictALL(List<Map<String, Integer>> featuresList, int[] answers) {
         int totalCorrect = 0;
         for (int i = 0; i < featuresList.size(); i++) {
             totalCorrect += predictClass(featuresList.get(i)) == answers[i] ? 1 : 0;

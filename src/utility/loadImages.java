@@ -1,10 +1,12 @@
+package utility;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-class loadImages {
-    static char[][][] getImages(String filename, double percent) throws IOException {
+public class loadImages {
+    public static char[][][] getImages(String filename, double percent) throws IOException {
 
         int width = 28, height = 28;
         if (filename.contains("face")) {
@@ -41,7 +43,7 @@ class loadImages {
         return total;
     }
 
-    static int[] getAnswers(String filename, double percent) throws IOException {
+    public static int[] getAnswers(String filename, double percent) throws IOException {
         int answers[] = new int[(int) Math.round(countTotal(filename)*percent)];
         int i = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {

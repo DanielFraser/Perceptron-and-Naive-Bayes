@@ -1,4 +1,4 @@
-/*
+package utility;/*
  * We take in the images from the files and extract features to pass into
  * the perceptron and naive bayes
  *
@@ -20,9 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class Features {
+public class Features {
 
-    static List<Map<String, Integer>> allFeatures(char[][][] images) {
+    public static List<Map<String, Integer>> allFeatures(char[][][] images) {
         List<Map<String, Integer>> pixels = createBasicFeatures(images);
         List<Map<String, Integer>> quadrants = quadrants(images);
         List<Map<String, Integer>> cols = addCols(images);
@@ -35,7 +35,7 @@ class Features {
         return pixels;
     }
 
-    static List<Map<String, Integer>> createBasicFeatures(char[][][] images) {
+    public static List<Map<String, Integer>> createBasicFeatures(char[][][] images) {
         List<Map<String, Integer>> featureList = new ArrayList<>();
         Map<String, Integer> temp;
         for (char[][] image : images) {
@@ -100,7 +100,7 @@ class Features {
         return nums;
     }
 
-    static List<Map<String, Integer>> addCols(char[][][] images) {
+    public static List<Map<String, Integer>> addCols(char[][][] images) {
         int colTotal;
         List<Map<String, Integer>> featureList = new ArrayList<>();
         Map<String, Integer> temp;

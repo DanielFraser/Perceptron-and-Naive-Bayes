@@ -1,8 +1,10 @@
+package algorithms;
+
 import java.io.Serializable;
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Perceptron implements Serializable {
 
@@ -26,7 +28,7 @@ public class Perceptron implements Serializable {
         }
     }
 
-    void train(List<Map<String, Integer>> featuresList, int[] answers) {
+    public void train(List<Map<String, Integer>> featuresList, int[] answers) {
         boolean noChanges = false;
         //stop when we hit epoch or we didn't have any changes ro weights
         for (int a = 0; a < this.epoch && !noChanges; a++) {
@@ -45,7 +47,7 @@ public class Perceptron implements Serializable {
         return true;
     }
 
-    int predict(Map<String, Integer> featuresList) {
+    public int predict(Map<String, Integer> featuresList) {
         int max[] = {Integer.MIN_VALUE, 0};
         int curTotal;
         for (int i = 0; i <= this.max; i++) {
