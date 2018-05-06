@@ -27,10 +27,10 @@ public class Features {
         List<Map<String, Integer>> quadrants = quadrants(images);
         List<Map<String, Integer>> cols = addCols(images);
         List<Map<String, Integer>> rows = addRows(images);
-        for (int i = 0; i < images.length; i++) {
+        for (int i = 0; i < pixels.size(); i++) {
             pixels.get(i).putAll(quadrants.get(i));
             pixels.get(i).putAll(cols.get(i));
-           pixels.get(i).putAll(rows.get(i));
+            pixels.get(i).putAll(rows.get(i));
         }
         return pixels;
     }
@@ -92,8 +92,8 @@ public class Features {
             temp = new HashMap<>();
             for (int i = 0; i < image[0].length; i++) {
                 colTotal = 0;
-                for (int j = 0; j < image.length; j++) {
-                    colTotal += image[j][i] == '#' ? 1 : 0;
+                for (char[] anImage : image) {
+                    colTotal += anImage[i] == '#' ? 1 : 0;
                 }
                 temp.put("col " + i, colTotal);
             }

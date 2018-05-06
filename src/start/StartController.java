@@ -126,6 +126,7 @@ public class StartController {
             }
             featureList = tempFeatureList.subList(0, size);
             answers = tempAnswers.stream().mapToInt(i->i).toArray();
+            //System.out.println(tempFeatureList.toString());
         }
         if (algo == 'p') {
             perc = new Perceptron(featureList, max, 20);
@@ -135,7 +136,10 @@ public class StartController {
             nb = new NB(featureList, max);
             nb.train(featureList, answers); //train the perceptron
             nbStatus.setText(String.format("trained on %s at %d%%", (face ? "face" : "digits"), Math.round(percent * 100)));
+            //nb.printProbs();
         }
+
+
     }
 
     public void trainAndTest(ActionEvent E) throws IOException {
@@ -157,7 +161,6 @@ public class StartController {
         mean = avg(accuracies);
         std = stdDev(accuracies, mean);
         report.setText(String.format("Accuracy: %.1f%%\nStandard deviation: %.1f", mean, std));
-        System.out.println(Arrays.toString(accuracies));
     }
 
     private double stdDev(double[] acc, double avg){
@@ -179,7 +182,7 @@ public class StartController {
         if (images.getText().equals("-1"))
             testAllAlgorithm(dataStr, algo);
         else {
-            int index = 0;
+            int index;
             if (images.getText().equals("-2"))
                 index = -2;
             else
@@ -208,12 +211,12 @@ public class StartController {
         int[] answers = loadImages.getAnswers(imageAnswers, 1);
         if (index == -2)
             index = new Random().nextInt(answers.length);
-        //System.out.println(index);
+
         List<Map<String, Integer>> featureList;
         if (algo == 'p')
             featureList = Features.createBasicFeatures(images);
         else if (dataStr.startsWith("Face"))
-            featureList = Features.addCols(images);
+            featureList = Features.allFeatures(images);
         else
             featureList = Features.allFeatures(images);
         int total;

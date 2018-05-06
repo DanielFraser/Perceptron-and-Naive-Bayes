@@ -23,6 +23,7 @@ public class NB {
                 this.probabilities.get(i).put(feature, new HashMap<>()); //add in features for each class
             }
         }
+//        System.out.println(this.features.toString());
     }
 
     /**
@@ -56,7 +57,7 @@ public class NB {
         for (int i = 0; i <= this.maxClasses; i++) {
             for (String feature : this.features) {
                 for (Integer s : this.probabilities.get(i).get(feature).keySet()) {
-                    this.probabilities.get(i).get(feature).put(s, (this.probabilities.get(i).get(feature).get(s)+1) / this.total[i]); //converts all to conditional probability
+                    this.probabilities.get(i).get(feature).put(s, (this.probabilities.get(i).get(feature).get(s)) / this.total[i]); //converts all to conditional probability
                 }
             }
         }
@@ -81,9 +82,13 @@ public class NB {
      */
     public int predictALL(List<Map<String, Integer>> featuresList, int[] answers) {
         int totalCorrect = 0;
+        ArrayList<Integer> temp = new ArrayList<>();
         for (int i = 0; i < featuresList.size(); i++) {
             totalCorrect += predictClass(featuresList.get(i)) == answers[i] ? 1 : 0;
+            temp.add(predictClass(featuresList.get(i)));
         }
+        //System.out.println(temp.toString());
+        //System.out.println(Arrays.toString(answers));
         return totalCorrect;
     }
 
@@ -95,20 +100,21 @@ public class NB {
      */
     public int predictClass(Map<String, Integer> features) {
         double total = 0, curTotal;
+        List<Integer> tieBreaker = new ArrayList<>();
         int Aclass = 0;
         for (int i = 0; i <= this.maxClasses; i++) {
             curTotal = 1;
             for (String s : this.features) {
                 if (this.probabilities.get(i).get(s).containsKey(features.get(s))) {
                     curTotal *= this.probabilities.get(i).get(s).get(features.get(s));
-                } else { //find closest neighbor
+                }
+                else { //find closest neighbor
                     int closest = Integer.MAX_VALUE;
                     for(Integer key : this.probabilities.get(i).get(s).keySet()){
                         if(Math.abs(features.get(s) - key) < Math.abs(features.get(s) - closest)){
                             closest = key;
                         }
                     }
-                    //System.out.println(this.probabilities.get(i).get(s).keySet());
                     curTotal *= this.probabilities.get(i).get(s).get(closest);
                 }
             }
@@ -117,14 +123,15 @@ public class NB {
                 total = curTotal;
                 Aclass = i;
             }
+
         }
         return Aclass;
     }
 
-    void printProbs() {
+    public void printProbs() {
         for (Map<String, Map<Integer, Double>> probability : this.probabilities) {
             for (String feature : this.features) {
-                System.out.println(probability.get(feature));
+                System.out.println("feature = " + feature + " : " + probability.get(feature));
             }
         }
     }
