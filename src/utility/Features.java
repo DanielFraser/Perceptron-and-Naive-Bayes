@@ -50,7 +50,7 @@ public class Features {
         return featureList;
     }
 
-    static List<Map<String, Integer>> quadrants(char[][][] images) {
+    private static List<Map<String, Integer>> quadrants(char[][][] images) {
         List<Map<String, Integer>> featureList = new ArrayList<>();
         Map<String, Integer> temp;
         int width = images[0].length, height = images[0][0].length;
@@ -84,22 +84,6 @@ public class Features {
         return rows;
     }
 
-    static int[] maxAndMin(char[][][] images){
-        int[] nums = {100, 0};
-        int colTotal;
-        for (char[][] image : images) {
-            for (int i = 0; i < image[0].length; i++) {
-                colTotal = 0;
-                for (int j = 0; j < image.length; j++) {
-                    colTotal += image[j][i] == '#' ? 1 : 0;
-                }
-                nums[0] = Math.min(colTotal, nums[0]);
-                nums[1] = Math.max(colTotal, nums[1]);
-            }
-        }
-        return nums;
-    }
-
     public static List<Map<String, Integer>> addCols(char[][][] images) {
         int colTotal;
         List<Map<String, Integer>> featureList = new ArrayList<>();
@@ -118,7 +102,7 @@ public class Features {
         return featureList;
     }
 
-    static List<Map<String, Integer>> addRows(char[][][] images) {
+    private static List<Map<String, Integer>> addRows(char[][][] images) {
         int colTotal;
         List<Map<String, Integer>> featureList = new ArrayList<>();
         Map<String, Integer> temp;

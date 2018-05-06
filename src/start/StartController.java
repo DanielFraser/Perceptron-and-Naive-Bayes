@@ -115,7 +115,8 @@ public class StartController {
             featureList = Features.allFeatures(images);
         if (percent < 1) {
             int size = (int) (featureList.size()*percent);
-            List<Integer> indexArray = IntStream.range(0, size).boxed().collect( Collectors.toList() );
+            List<Integer> indexArray = IntStream.range(0, featureList.size()).boxed().collect( Collectors.toList() );
+            indexArray = indexArray.subList(0, size);
             Collections.shuffle(indexArray);
             List<Map<String, Integer>> tempFeatureList = new ArrayList<>();
             List<Integer> tempAnswers = new ArrayList<>();
@@ -156,6 +157,7 @@ public class StartController {
         mean = avg(accuracies);
         std = stdDev(accuracies, mean);
         report.setText(String.format("Accuracy: %.1f%%\nStandard deviation: %.1f", mean, std));
+        System.out.println(Arrays.toString(accuracies));
     }
 
     private double stdDev(double[] acc, double avg){

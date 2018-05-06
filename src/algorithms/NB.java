@@ -1,9 +1,8 @@
 package algorithms;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class NB {
     private final ArrayList<String> features;
@@ -57,7 +56,7 @@ public class NB {
         for (int i = 0; i <= this.maxClasses; i++) {
             for (String feature : this.features) {
                 for (Integer s : this.probabilities.get(i).get(feature).keySet()) {
-                    this.probabilities.get(i).get(feature).put(s, this.probabilities.get(i).get(feature).get(s) / this.total[i]); //converts all to conditional probability
+                    this.probabilities.get(i).get(feature).put(s, (this.probabilities.get(i).get(feature).get(s)+1) / this.total[i]); //converts all to conditional probability
                 }
             }
         }
@@ -76,8 +75,10 @@ public class NB {
 
     /**
      * Predicts every item in the list
-     *  @param featuresList
-     * @param answers*/
+     *
+     * @param featuresList
+     * @param answers
+     */
     public int predictALL(List<Map<String, Integer>> featuresList, int[] answers) {
         int totalCorrect = 0;
         for (int i = 0; i < featuresList.size(); i++) {
@@ -100,8 +101,15 @@ public class NB {
             for (String s : this.features) {
                 if (this.probabilities.get(i).get(s).containsKey(features.get(s))) {
                     curTotal *= this.probabilities.get(i).get(s).get(features.get(s));
-                } else {
-                    curTotal = 0;
+                } else { //find closest neighbor
+                    int closest = Integer.MAX_VALUE;
+                    for(Integer key : this.probabilities.get(i).get(s).keySet()){
+                        if(Math.abs(features.get(s) - key) < Math.abs(features.get(s) - closest)){
+                            closest = key;
+                        }
+                    }
+                    //System.out.println(this.probabilities.get(i).get(s).keySet());
+                    curTotal *= this.probabilities.get(i).get(s).get(closest);
                 }
             }
             curTotal *= initProb[i];
