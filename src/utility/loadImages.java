@@ -12,7 +12,7 @@ public class loadImages {
             width = 60;
             height = 70;
         }
-        int total = Math.round(countTotal(filename)/height);
+        int total = (int) (Math.round(countTotal(filename) / height) * percent);
         char imageArray[][][] = new char[total][height][width];
         int i = 0, k = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
@@ -43,14 +43,14 @@ public class loadImages {
     }
 
     public static int[] getAnswers(String filename, double percent) throws IOException {
-        int answers[] = new int[(int) Math.round(countTotal(filename)*percent)];
+        int answers[] = new int[(int) Math.round(countTotal(filename) * percent)];
         int i = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String line;
             while ((line = br.readLine()) != null) {
                 answers[i] = Integer.valueOf(line);
                 i++;
-                if(i >= (int) (countTotal(filename) * percent))
+                if (i >= (int) (countTotal(filename) * percent))
                     break;
             }
         }

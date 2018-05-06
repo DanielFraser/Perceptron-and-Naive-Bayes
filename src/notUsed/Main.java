@@ -12,7 +12,58 @@ import java.util.Map;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        PerceptronEval();
+        //PerceptronEval();
+        printTrainingTime();
+    }
+
+    private static void printTrainingTime() throws IOException {
+        String imageTrain = "data/digitdata/trainingimages", imageAnswers = "data/digitdata/traininglabels";
+        List<Map<String, Integer>> featureList;
+        boolean face;
+        int max = 9;
+        char[][][] images; //load digit training
+        int[] answers;
+        Perceptron perc;
+        NB nb;
+        long startTime = 0;
+        String[] formats = {"Digit Training", "Face Training"};
+        String[] ml = {"Perceptron", "Naive Bayes"};
+        for (String m : ml) {
+            System.out.println(m);
+            System.out.println("--------------------------------");
+            for (String format : formats) {
+                System.out.println(format);
+                System.out.println("----------------");
+                face = format.startsWith("Face");
+                if (face) {
+                    imageTrain = "data/facedata/facedatatrain";
+                    imageAnswers = "data/facedata/facedatatrainlabels";
+                    max = 1;
+                }
+                for (double i = 0.1; i <= 1; i += 0.1) {
+                    images = loadImages.getImages(imageTrain, i);
+                    answers = loadImages.getAnswers(imageAnswers, i);
+                    if (m.startsWith("P"))
+                        featureList = Features.createBasicFeatures(images);
+                    else if (face)
+                        featureList = Features.addCols(images);
+                    else
+                        featureList = Features.allFeatures(images);
+
+                    if (m.startsWith("P")) {
+                        perc = new Perceptron(featureList, max, 200);
+                        startTime = System.nanoTime();
+                        perc.train(featureList, answers);
+                        System.out.printf("Time it took to train %d%% of the data: %f seconds\n", Math.round(i*100), (System.nanoTime() - startTime)/1000000000.0);
+                    } else {
+                        nb = new NB(featureList, max);
+                        startTime = System.nanoTime();
+                        nb.train(featureList, answers);
+                        System.out.printf("Time it took to train %d%% of the data: %f seconds\n", Math.round(i*100), (System.nanoTime() - startTime)/1000000000.0);
+                    }
+                }
+            }
+        }
     }
 
     private static NB naiveTrain(boolean face, double percent) throws IOException {
@@ -61,9 +112,9 @@ public class Main {
         images = loadImages.getImages(imageTrain, 1); //load digit training
         answers = loadImages.getAnswers(imageAnswers, 1);
         featureList = Features.createBasicFeatures(images);
-        if(percent < 1){
+        if (percent < 1) {
             Collections.shuffle(featureList);
-            featureList = featureList.subList(0, (int) (percent*featureList.size()));
+            featureList = featureList.subList(0, (int) (percent * featureList.size()));
         }
         perc = new Perceptron(featureList, max, 200);
         perc.train(featureList, answers); //train the perceptron
