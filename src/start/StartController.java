@@ -116,8 +116,8 @@ public class StartController {
         if (percent < 1) {
             int size = (int) (featureList.size()*percent);
             List<Integer> indexArray = IntStream.range(0, featureList.size()).boxed().collect( Collectors.toList() );
-            indexArray = indexArray.subList(0, size);
             Collections.shuffle(indexArray);
+            indexArray = indexArray.subList(0, size);
             List<Map<String, Integer>> tempFeatureList = new ArrayList<>();
             List<Integer> tempAnswers = new ArrayList<>();
             for (Integer index : indexArray) {
@@ -126,7 +126,6 @@ public class StartController {
             }
             featureList = tempFeatureList.subList(0, size);
             answers = tempAnswers.stream().mapToInt(i->i).toArray();
-            //System.out.println(tempFeatureList.toString());
         }
         if (algo == 'p') {
             perc = new Perceptron(featureList, max, 20);

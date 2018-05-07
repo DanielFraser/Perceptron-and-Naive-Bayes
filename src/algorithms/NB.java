@@ -23,7 +23,6 @@ public class NB {
                 this.probabilities.get(i).put(feature, new HashMap<>()); //add in features for each class
             }
         }
-//        System.out.println(this.features.toString());
     }
 
     /**
@@ -87,8 +86,6 @@ public class NB {
             totalCorrect += predictClass(featuresList.get(i)) == answers[i] ? 1 : 0;
             temp.add(predictClass(featuresList.get(i)));
         }
-        //System.out.println(temp.toString());
-        //System.out.println(Arrays.toString(answers));
         return totalCorrect;
     }
 
