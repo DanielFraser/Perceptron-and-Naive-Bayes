@@ -215,7 +215,7 @@ public class StartController {
         if (algo == 'p')
             featureList = Features.createBasicFeatures(images);
         else if (dataStr.startsWith("Face"))
-            featureList = Features.allFeatures(images);
+            featureList = Features.addCols(images);
         else
             featureList = Features.allFeatures(images);
         int total;
